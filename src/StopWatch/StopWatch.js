@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 
 function StopWatch() {
     const [timer, setTimer] = useState(0);
-    const [isRunning, setIsRunning] = useState(false); // Corrected typo
-    
+    const [isRunning, setIsRunning] = useState(false);
+
     const formatTime = (seconds) => {
         const minutes = Math.floor(seconds / 60);
-        const sec = seconds % 60; // Corrected modulus value to 60
+        const sec = seconds % 60;
         return `${minutes}:${sec < 10 ? "0" : ""}${sec}`;
     };
 
@@ -16,26 +16,30 @@ function StopWatch() {
             interval = setInterval(() => {
                 setTimer((prev) => prev + 1);
             }, 1000);
-        } else {
+        } else if (!isRunning && timer !== 0) {
             clearInterval(interval);
         }
-        
-        return () => clearInterval(interval); // Clean up interval on component unmount
+
+        return () => clearInterval(interval);
     }, [isRunning]);
+
+    const toggleTimer = () => {
+        setIsRunning((prev) => !prev);
+    };
+
+    const resetTimer = () => {
+        setTimer(0);
+        setIsRunning(false);
+    };
 
     return (
         <div>
             <h1>Stopwatch</h1>
-            <h2>Timer: {formatTime(timer)}</h2>
-            <button onClick={() => {
-                setIsRunning((prev) => !prev);
-            }}>
+            <h2>Time: {formatTime(timer)}</h2>
+            <button onClick={toggleTimer}>
                 {isRunning ? "Stop" : "Start"}
             </button>
-            <button onClick={() => {
-                setTimer(0);
-                setIsRunning(false);
-            }}>
+            <button onClick={resetTimer}>
                 Reset
             </button>
         </div>
